@@ -1,0 +1,20 @@
+version: '3.1'
+
+services:
+
+  db-excel:
+    image: mysql:latest
+    # command: --mysql-native-password=ON
+    restart: "no"
+    environment:
+      MYSQL_ROOT_PASSWORD: s83n38DGB8d72
+    ports:
+      - 33307:3306
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  adminer:
+    image: adminer:latest
+    restart: "no"
+    ports:
+      - 8181:8080
