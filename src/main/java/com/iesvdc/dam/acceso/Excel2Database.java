@@ -1,8 +1,14 @@
 package com.iesvdc.dam.acceso;
 
 import java.sql.Connection;
+import java.util.Properties;
+
+import org.apache.poi.ss.usermodel.Workbook;
 
 import com.iesvdc.dam.acceso.conexion.Conexion;
+import com.iesvdc.dam.acceso.conexion.Config;
+import com.iesvdc.dam.acceso.excelutil.ExcelReader;
+import com.iesvdc.dam.acceso.modelo.WorkbookModel;
 
 /**
  * Este programa genérico en java (proyecto Maven) es un ejercicio 
@@ -24,7 +30,19 @@ public class Excel2Database
 {
     public static void main( String[] args )
     {                
+        Properties props = 
+            Config.getProperties("config.properties");
 
+        System.out.println("El nombre del archivo es: " +
+            props.getProperty("file"));
+        System.out.println("La acción es: " + 
+            props.getProperty("action"));
+        
+        //Todo si la acción es LOAD:
+        ExcelReader reader = new ExcelReader();
+        reader.loadWorkbook(props.getProperty("file"));
+        
+        //Test de conexión
         try (Connection conexion = Conexion.getConnection()) {
             if (conexion!=null) 
                 System.out.println("Conectado correctamente.");
