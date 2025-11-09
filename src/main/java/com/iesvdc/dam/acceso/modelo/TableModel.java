@@ -10,6 +10,7 @@ import java.util.Objects;
 public class TableModel {
     private final String name;
     private final List<FieldModel> fields = new ArrayList<>();
+    private final List<List<Object>> rows = new ArrayList<>();
 
 
 
@@ -29,11 +30,17 @@ public class TableModel {
         return fields.add(fm);
     }
 
-
     public List<FieldModel> getFields() {
         return this.fields;
     }
 
+    public boolean addRow(List<Object> row) {
+        return rows.add(row);
+    }
+
+    public List<List<Object>> getRows() {
+        return this.rows;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -43,7 +50,9 @@ public class TableModel {
             return false;
         }
         TableModel tableModel = (TableModel) o;
-        return Objects.equals(name, tableModel.name) && Objects.equals(fields, tableModel.fields);
+        return Objects.equals(name, tableModel.name)
+            && Objects.equals(fields, tableModel.fields)
+            && Objects.equals(rows, tableModel.rows);
     }
 
 
@@ -52,6 +61,7 @@ public class TableModel {
         return "{" +
             " name='" + getName() + "'" +
             ", fields='" + getFields() + "'" +
+            ", rows='" + getRows() + "'" +
             "}";
     }
     
