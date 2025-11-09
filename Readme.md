@@ -15,7 +15,20 @@ excel2database -f fichero.xlsx -db agenda
 
 ## Instalando Java para que funcione
 
+1. Instala **Java 17** o superior.  
+   Ubuntu / Debian:
+   ```bash
+   sudo apt-get update
+   sudo apt-get install openjdk-17-jdk
+   java -version
+   ```
+2. Instala **Maven 3.9+**:
+   ```bash
+   sudo apt-get install maven
+   mvn -v
+   ```
 
+3. Configura MySQL (puedes usar Docker con `stack-exelreader/docker-compose.yml`).
 
 ## Cómo crear este proyecto maven desde cero
 
@@ -156,6 +169,76 @@ public class ExcelUtils {
 }
 
 ```
+
+## Solución de problemas
+
+- `mvn: command not found` → instala Maven.
+- `No se pudo obtener la conexión` → revisa host, puerto, usuario y que MySQL esté activo.
+- Tipos incorrectos → verifica la fila 1 del Excel.
+- Excel vacío al exportar → comprueba el esquema (`database`) y permisos.
+
+## Datos de ejemplo
+
+- `datos/test.xlsx`: 19 registros de prueba.
+- `datos/personas.xlsx`: libro adicional.
+- `datos/salida.xlsx`: se crea al exportar.
+
+## Scripts y utilidades
+
+- `stack-exelreader/docker-compose.yml`: levanta MySQL con datos de ejemplo.
+- `docs/`: documentación complementaria.
+
+## Ejemplos de ejecución
+
+### Importar (acción `load`)
+```
+El nombre del archivo es: datos/test.xlsx
+La acción es: load
+Generando tablas...
+CREATE TABLE personas(`nombre` VARCHAR(255), ...)
+Importación completada con éxito.
+```
+
+### Exportar (acción `save`)
+```
+El nombre del archivo es: datos/test.xlsx
+La acción es: save
+Exportación completada. Archivo generado en: datos/salida.xlsx
+```
+
+Si aparece `No se pudo obtener la conexión a la base de datos`, revisa credenciales y que MySQL esté corriendo.
+
+## Estructura del proyecto
+
+```
+datos/                     # Excels de entrada/salida
+docs/                      # Documentación y utilidades
+src/main/java/
+  com/iesvdc/dam/acceso/
+    ExcelDatabaseApp.java  # Clase principal (main)
+    conexion/              # Config y conexión JDBC
+    databaseutil/          # Exportación MySQL -> Excel
+    excelutil/             # Importación Excel -> MySQL
+    modelo/                # POJOs del libro Excel
+```
+
+## Comprobaciones rápidas
+
+1. **Test de compilación**  
+   ```
+   mvn -q -DskipTests compile
+   ```
+2. **Conexión a MySQL**  
+   Asegúrate de que `config.properties` apunta al servidor correcto. Puedes ejecutar solo la exportación (`action=save`) para comprobar que la conexión funciona.
+3. **Libro de salida**  
+   Tras exportar, abre `datos/salida.xlsx` y verifica:
+   - Fila 0: nombres de columnas.
+   - Filas siguientes: datos reales sin sobrescribir la fila 1.
+
+## Referencias adicionales
+
+- `docs/Tema02TareaExcel2Database.pdf`: enunciado completo con rúbrica.
+- `docs/makebook.sh`: script para generar el PDF en Linux usando `pandoc`.
 
 ## Apéndice: Repaso de SQL
 
